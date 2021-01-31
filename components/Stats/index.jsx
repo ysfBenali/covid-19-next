@@ -2,6 +2,7 @@ import React from "react";
 import { useRouter } from "next/router";
 import Select from "react-select";
 import { Doughnut, Line } from "react-chartjs-2";
+import metricPrefix from "../../common/helpers/metricPrefix";
 import {
   Wrapper,
   CasesWrapper,
@@ -122,6 +123,7 @@ const Stats = ({
                   {
                     ticks: {
                       // max: 10000
+                      callback: (value) => metricPrefix(value),
                     },
                   },
                 ],
