@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Select from "react-select";
 import { Doughnut, Line } from "react-chartjs-2";
 import metricPrefix from "../../common/helpers/metricPrefix";
+import NumberFormat from "react-number-format";
 import {
   Wrapper,
   CasesWrapper,
@@ -13,7 +14,6 @@ import {
   Tabs,
   Tab,
 } from "./styles";
-import { sign } from "crypto";
 
 const Stats = ({
   stats: {
@@ -49,7 +49,7 @@ const Stats = ({
   });
 
   const router = useRouter();
-  
+
   useEffect(() => {
     setChartsData({
       filter: "daily",
@@ -89,21 +89,45 @@ const Stats = ({
     <Wrapper>
       {country ? <Country>{country}</Country> : null}
       <CasesWrapper>
-        <Card>
+        <Card color="#FFA500">
           <h1>Confirmed</h1>
-          <p>{currentConfirmed}</p>
+          <p>
+            <NumberFormat
+              value={currentConfirmed}
+              displayType={"text"}
+              thousandSeparator={true}
+            />
+          </p>
         </Card>
-        <Card>
+        <Card color="#31B2F2">
           <h1>Active</h1>
-          <p>{currentActive}</p>
+          <p>
+            <NumberFormat
+              value={currentActive}
+              displayType={"text"}
+              thousandSeparator={true}
+            />
+          </p>
         </Card>
-        <Card>
+        <Card color="#4CAF50">
           <h1>Recovered</h1>
-          <p>{currentRecovered}</p>
+          <p>
+            <NumberFormat
+              value={currentRecovered}
+              displayType={"text"}
+              thousandSeparator={true}
+            />
+          </p>
         </Card>
-        <Card>
+        <Card color="#FF0000">
           <h1>Deaths</h1>
-          <p>{currentDeaths}</p>
+          <p>
+            <NumberFormat
+              value={currentDeaths}
+              displayType={"text"}
+              thousandSeparator={true}
+            />
+          </p>
         </Card>
       </CasesWrapper>
       <Countries>
@@ -111,7 +135,7 @@ const Stats = ({
         <Select
           onChange={(e) => router.push(`/${e.value}`)}
           instanceId="countries"
-          options={countries?.map((country) => ({
+          options={countries ?.map((country) => ({
             label: country.name,
             value: country.code,
           }))}
@@ -138,16 +162,25 @@ const Stats = ({
                   label: chartsData.confActLabel,
                   data: [...chartsData.lineData[0]],
                   fill: true,
-                  backgroundColor: "rgba(75,192,192,0.2)",
-                  borderColor: "rgba(75,192,192,0.2)",
+                  backgroundColor:
+                    chartsData.confActLabel === "Active"
+                      ? "rgba(75,192,192,0.2)"
+                      : "#FFE1AB",
+                  borderColor: chartsData.confActLabel === "Active"
+                    ? "rgba(75,192,192,0.2)"
+                    : "#FFE1AB",
                   borderWidth: 1,
+                  pointHoverBorderColor: chartsData.confActLabel === "Active"
+                    ? "#31B2F2"
+                    : "#FFAA00",
+                  pointHoverBackgroundColor: "rgba(75,192,192,0.2)",
                 },
                 {
                   label: "Recovered",
                   data: [...chartsData.lineData[1]],
                   fill: false,
                   backgroundColor: "rgba(75,192,192,0.2)",
-                  borderColor: "rgb(76, 175, 80)",
+                  borderColor: "#4CAF50",
                   borderWidth: 1,
                 },
                 {
@@ -201,8 +234,16 @@ const Stats = ({
               datasets: [
                 {
                   data: [...chartsData.doughnutData],
-                  backgroundColor: ["#31B2F2", "#4CAF50", "#FF0000"],
-                  hoverBackgroundColor: ["#79CAF2", "#A5D6A7", "#FF8787"],
+                  backgroundColor: [
+                    chartsData.confActLabel === "Active" ? "#31B2F2" : "#FFA500",
+                    "#4CAF50",
+                    "#FF0000",
+                  ],
+                  hoverBackgroundColor: [
+                    chartsData.confActLabel === "Active" ? "#79CAF2" : "#FCC86A",
+                    "#A5D6A7",
+                    "#ff5151",
+                  ],
                 },
               ],
 

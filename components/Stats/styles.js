@@ -54,7 +54,7 @@ export const Card = styled.div`
   }
 
   h1 {
-    font-size: 19pt;
+    font-size: 22pt;
     font-weight: 390;
     margin-bottom: 1rem;
     @media (max-width: 1100px) {
@@ -64,8 +64,12 @@ export const Card = styled.div`
   }
 
   p {
-    font-size: 24pt;
     margin: 0;
+    color : ${({color}) => color};
+    font-size: 24pt;
+    @media (max-width: 1100px) {
+      font-size: 19pt;
+    }
   }
 `;
 
@@ -78,7 +82,7 @@ export const Country = styled.div`
 `;
 
 export const Countries = styled.div`
-  margin: 1rem auto 2rem;
+  margin: 2rem auto 2rem;
   width: 30%;
   text-align: left;
   font-size: 15pt;
