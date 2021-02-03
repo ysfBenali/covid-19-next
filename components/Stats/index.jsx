@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Select from "react-select";
 import { Doughnut, Line } from "react-chartjs-2";
@@ -10,60 +10,80 @@ import {
   Countries,
   Card,
   Country,
+  Tabs,
+  Tab,
 } from "./styles";
+import { sign } from "crypto";
 
 const Stats = ({
-  stats: { confirmed, recovered, deaths, active },
+  stats: {
+    //current stats
+    confirmed: currentConfirmed,
+    recovered: currentRecovered,
+    deaths: currentDeaths,
+    active: currentActive,
+    new_confirmed: currentNewConfirmed,
+    new_recovered: currentNewRecovered,
+    new_deaths: currentNewDeaths,
+  },
   country,
   countries,
   days,
-  timeLineStats: { new_confirmed, new_recovered, new_deaths },
+  timeLineStats: {
+    //arrays props
+    confirmed,
+    recovered,
+    deaths,
+    active,
+    new_confirmed,
+    new_recovered,
+    new_deaths,
+  },
 }) => {
-  //calc active cases
-  const activeCases = confirmed - deaths - recovered;
+  ///State handling
+  const [chartsData, setChartsData] = useState({
+    filter: "daily",
+    confActLabel: "Confirmed",
+    doughnutData: [currentNewConfirmed, currentNewRecovered, currentNewDeaths],
+    lineData: [new_confirmed, new_recovered, new_deaths],
+  });
 
-  const chartData = {
-    datasets: [
-      {
-        data: [activeCases, recovered, deaths],
-        backgroundColor: ["#31B2F2", "#4CAF50", "#FF0000"],
-        hoverBackgroundColor: ["#79CAF2", "#A5D6A7", "#FF8787"],
-      },
-    ],
-
-    labels: ["Active", "Recovered", "Deaths"],
-  };
-
-  const data = {
-    labels: days,
-    datasets: [
-      {
-        label: "Confirmed",
-        data: new_confirmed,
-        fill: true,
-        backgroundColor: "rgba(75,192,192,0.2)",
-        borderColor: "rgba(75,192,192,0.2)",
-        borderWidth: 1,
-      },
-      {
-        label: "Recovered",
-        data: new_recovered,
-        fill: false,
-        backgroundColor: "rgba(75,192,192,0.2)",
-        borderColor: "rgb(76, 175, 80)",
-        borderWidth: 1,
-      },
-      {
-        label: "Deaths",
-        data: new_deaths,
-        fill: false,
-        backgroundColor: "rgba(75,192,192,0.2)",
-        borderColor: "rgb(255, 0, 0)",
-        borderWidth: 1,
-      },
-    ],
-  };
   const router = useRouter();
+  
+  useEffect(() => {
+    setChartsData({
+      filter: "daily",
+      confActLabel: "Confirmed",
+      doughnutData: [
+        currentNewConfirmed,
+        currentNewRecovered,
+        currentNewDeaths,
+      ],
+      lineData: [new_confirmed, new_recovered, new_deaths],
+    });
+  }, [country]);
+
+  const getTotaleData = () => {
+    setChartsData({
+      filter: "cumulative",
+      confActLabel: "Active",
+      doughnutData: [currentActive, currentRecovered, currentDeaths],
+      lineData: [active, recovered, deaths],
+    });
+  };
+
+  const getDailyData = () => {
+    setChartsData({
+      filter: "daily",
+      confActLabel: "Confirmed",
+      doughnutData: [
+        currentNewConfirmed,
+        currentNewRecovered,
+        currentNewDeaths,
+      ],
+      lineData: [new_confirmed, new_recovered, new_deaths],
+    });
+  };
 
   return (
     <Wrapper>
@@ -71,19 +91,19 @@ const Stats = ({
       <CasesWrapper>
         <Card>
           <h1>Confirmed</h1>
-          <p>{confirmed}</p>
+          <p>{currentConfirmed}</p>
         </Card>
         <Card>
-          <h1>Active Cases</h1>
-          <p>{activeCases}</p>
+          <h1>Active</h1>
+          <p>{currentActive}</p>
         </Card>
         <Card>
           <h1>Recovered</h1>
-          <p>{recovered}</p>
+          <p>{currentRecovered}</p>
         </Card>
         <Card>
           <h1>Deaths</h1>
-          <p>{deaths}</p>
+          <p>{currentDeaths}</p>
         </Card>
       </CasesWrapper>
       <Countries>
@@ -97,10 +117,49 @@ const Stats = ({
           }))}
         />
       </Countries>
+      <Tabs>
+        <Tab onClick={getDailyData} clicked={chartsData.filter === "daily"}>
+          <h4>Daily</h4>
+        </Tab>
+        <Tab
+          onClick={getTotaleData}
+          clicked={chartsData.filter === "cumulative"}
+        >
+          <h4>Cumulative</h4>
+        </Tab>
+      </Tabs>
       <ChartsWraper>
         <div className="chart-container-1">
           <Line
-            data={data}
+            data={{
+              labels: days,
+              datasets: [
+                {
+                  label: chartsData.confActLabel,
+                  data: [...chartsData.lineData[0]],
+                  fill: true,
+                  backgroundColor: "rgba(75,192,192,0.2)",
+                  borderColor: "rgba(75,192,192,0.2)",
+                  borderWidth: 1,
+                },
+                {
+                  label: "Recovered",
+                  data: [...chartsData.lineData[1]],
+                  fill: false,
+                  backgroundColor: "rgba(75,192,192,0.2)",
+                  borderColor: "rgb(76, 175, 80)",
+                  borderWidth: 1,
+                },
+                {
+                  label: "Deaths",
+                  data: [...chartsData.lineData[2]],
+                  fill: false,
+                  backgroundColor: "rgba(75,192,192,0.2)",
+                  borderColor: "rgb(255, 0, 0)",
+                  borderWidth: 1,
+                },
+              ],
+            }}
             // width={400}
             height={270}
             options={{
@@ -138,7 +197,17 @@ const Stats = ({
         </div>
         <div className="chart-container-2">
           <Doughnut
-            data={chartData}
+            data={{
+              datasets: [
+                {
+                  data: [...chartsData.doughnutData],
+                  backgroundColor: ["#31B2F2", "#4CAF50", "#FF0000"],
+                  hoverBackgroundColor: ["#79CAF2", "#A5D6A7", "#FF8787"],
+                },
+              ],
+
+              labels: [chartsData.confActLabel, "Recovered", "Deaths"],
+            }}
             // width={50}
             height={270}
             options={{

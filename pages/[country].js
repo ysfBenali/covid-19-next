@@ -43,14 +43,6 @@ export async function getStaticProps({ params }) {
   // If the route is like /posts/1, then params.id is 1
   let { country } = params;
 
-  const resStats = await fetch(`https://corona-api.com/countries/${country}`);
-  const {
-    data: { latest_data: stats },
-  } = await resStats.json();
-
-  const res = await fetch("https://corona-api.com/countries");
-  const { data: countries } = await res.json();
-
   const timeLineRes = await fetch(
     `https://corona-api.com/countries/${country}`
   );
@@ -58,21 +50,42 @@ export async function getStaticProps({ params }) {
     data: { timeline },
   } = await timeLineRes.json();
 
+  //first element of array
+  const [stats] = timeline;
+
   const days = timeline.map(({ date }) => date);
 
+  //total
+  const confirmed = timeline.map(({ confirmed }) => confirmed);
+  const recovered = timeline.map(({ recovered }) => recovered);
+  const deaths = timeline.map(({ deaths }) => deaths);
+  //daily
   const new_confirmed = timeline.map(({ new_confirmed }) => new_confirmed);
   const new_recovered = timeline.map(({ new_recovered }) => new_recovered);
   const new_deaths = timeline.map(({ new_deaths }) => new_deaths);
+  const active = timeline.map(({ active }) => active);
+
+   //get all countries
+  const res = await fetch("https://corona-api.com/countries");
+  const { data: countries } = await res.json();
 
   // Pass post data to the page via props
   return {
     revalidate: 5,
     props: {
-      country,
       stats,
       countries,
+      country,
       days,
-      timeLineStats: { new_confirmed, new_recovered, new_deaths },
+      timeLineStats: {
+        new_confirmed,
+        new_recovered,
+        new_deaths,
+        active,
+        confirmed,
+        recovered,
+        deaths,
+      },
     },
   };
 }

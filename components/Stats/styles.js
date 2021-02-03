@@ -127,3 +127,36 @@ export const ChartsWraper = styled.div`
     flex-direction: column-reverse;
   }
 `;
+
+export const Tab = styled.div`
+  cursor: pointer;
+  text-align: center;
+  font-size: 14px;
+  min-width: 6rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-right: 0.25rem;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  color: rgba(108, 117, 125, 0.6);
+  background: rgba(108, 117, 125, 0.0627451);
+  & :hover {
+    color: #6c757d;
+    background: #f1f1f1;
+  }
+  ${(props) =>
+    props.clicked &&
+    `background: #f1f1f1;
+    color: #6c757d;`}
+  h4 {
+    display: block;
+  }
+`;
+export const Tabs = styled.div`
+  display: flex;
+  flex-direction: row;
+  cursor: pointer;
+  @media (max-width: 1700px) {
+    margin-top: 2rem;
+  }
+`;
