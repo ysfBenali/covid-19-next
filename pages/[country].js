@@ -47,11 +47,17 @@ export async function getStaticProps({ params }) {
     `https://corona-api.com/countries/${country}`
   );
   const {
-    data: { timeline },
+    data: { timeline, latest_data },
   } = await timeLineRes.json();
 
-  //first element of array
-  const [stats] = timeline;
+  let stats;
+  if (timeline.length !== 0)
+    //first element of array
+    [stats] = timeline;
+  else {
+    stats = latest_data;
+    stats.active = stats.confirmed - stats.recovered - stats.deaths
+  }
 
   const days = timeline.map(({ date }) => date);
 
@@ -65,7 +71,7 @@ export async function getStaticProps({ params }) {
   const new_deaths = timeline.map(({ new_deaths }) => new_deaths);
   const active = timeline.map(({ active }) => active);
 
-   //get all countries
+  //get all countries
   const res = await fetch("https://corona-api.com/countries");
   const { data: countries } = await res.json();
 

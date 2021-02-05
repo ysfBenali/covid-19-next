@@ -40,6 +40,8 @@ const Stats = ({
     new_deaths,
   },
 }) => {
+  const router = useRouter();
+  
   ///State handling
   const [chartsData, setChartsData] = useState({
     filter: "daily",
@@ -48,20 +50,7 @@ const Stats = ({
     lineData: [new_confirmed, new_recovered, new_deaths],
   });
 
-  const router = useRouter();
-
-  useEffect(() => {
-    setChartsData({
-      filter: "daily",
-      confActLabel: "Confirmed",
-      doughnutData: [
-        currentNewConfirmed,
-        currentNewRecovered,
-        currentNewDeaths,
-      ],
-      lineData: [new_confirmed, new_recovered, new_deaths],
-    });
-  }, [country]);
+  const noTimeLine = (confirmed.length + recovered.length + deaths.length > 0) ? false : true
 
   const getTotaleData = () => {
     setChartsData({
@@ -84,6 +73,13 @@ const Stats = ({
       lineData: [new_confirmed, new_recovered, new_deaths],
     });
   };
+
+  useEffect(() => {
+    if (noTimeLine)
+      getTotaleData();
+    else
+      getDailyData();
+  }, [country]);
 
   return (
     <Wrapper>
@@ -141,7 +137,7 @@ const Stats = ({
           }))}
         />
       </Countries>
-      <Tabs>
+      {(!noTimeLine) ? <Tabs>
         <Tab onClick={getDailyData} clicked={chartsData.filter === "daily"}>
           <h4>Daily</h4>
         </Tab>
@@ -151,83 +147,84 @@ const Stats = ({
         >
           <h4>Cumulative</h4>
         </Tab>
-      </Tabs>
+      </Tabs> : null}
       <ChartsWraper>
-        <div className="chart-container-1">
-          <Line
-            data={{
-              labels: days,
-              datasets: [
-                {
-                  label: chartsData.confActLabel,
-                  data: [...chartsData.lineData[0]],
-                  fill: true,
-                  backgroundColor:
-                    chartsData.confActLabel === "Active"
+        {(!noTimeLine) ?
+          <div className="chart-container-1">
+            <Line
+              data={{
+                labels: days,
+                datasets: [
+                  {
+                    label: chartsData.confActLabel,
+                    data: [...chartsData.lineData[0]],
+                    fill: true,
+                    backgroundColor:
+                      chartsData.confActLabel === "Active"
+                        ? "rgba(75,192,192,0.2)"
+                        : "#FFE1AB",
+                    borderColor: chartsData.confActLabel === "Active"
                       ? "rgba(75,192,192,0.2)"
                       : "#FFE1AB",
-                  borderColor: chartsData.confActLabel === "Active"
-                    ? "rgba(75,192,192,0.2)"
-                    : "#FFE1AB",
-                  borderWidth: 1,
-                  pointHoverBorderColor: chartsData.confActLabel === "Active"
-                    ? "#31B2F2"
-                    : "#FFAA00",
-                  pointHoverBackgroundColor: "rgba(75,192,192,0.2)",
-                },
-                {
-                  label: "Recovered",
-                  data: [...chartsData.lineData[1]],
-                  fill: false,
-                  backgroundColor: "rgba(75,192,192,0.2)",
-                  borderColor: "#4CAF50",
-                  borderWidth: 1,
-                },
-                {
-                  label: "Deaths",
-                  data: [...chartsData.lineData[2]],
-                  fill: false,
-                  backgroundColor: "rgba(75,192,192,0.2)",
-                  borderColor: "rgb(255, 0, 0)",
-                  borderWidth: 1,
-                },
-              ],
-            }}
-            // width={400}
-            height={270}
-            options={{
-              responsive: true,
-              maintainAspectRatio: false,
-              legend: {
-                position: "bottom",
-              },
-              scales: {
-                xAxes: [
+                    borderWidth: 1,
+                    pointHoverBorderColor: chartsData.confActLabel === "Active"
+                      ? "#31B2F2"
+                      : "#FFAA00",
+                    pointHoverBackgroundColor: "rgba(75,192,192,0.2)",
+                  },
                   {
-                    type: "time",
-                    time: {
-                      unit: "month",
-                      tooltipFormat: "ddd",
-                    },
+                    label: "Recovered",
+                    data: [...chartsData.lineData[1]],
+                    fill: false,
+                    backgroundColor: "rgba(75,192,192,0.2)",
+                    borderColor: "#4CAF50",
+                    borderWidth: 1,
+                  },
+                  {
+                    label: "Deaths",
+                    data: [...chartsData.lineData[2]],
+                    fill: false,
+                    backgroundColor: "rgba(75,192,192,0.2)",
+                    borderColor: "rgb(255, 0, 0)",
+                    borderWidth: 1,
                   },
                 ],
-                yAxes: [
-                  {
-                    ticks: {
-                      // max: 10000
-                      callback: (value) => metricPrefix(value),
-                    },
-                  },
-                ],
-              },
-              elements: {
-                point: {
-                  radius: 0,
+              }}
+              // width={400}
+              height={270}
+              options={{
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                  position: "bottom",
                 },
-              },
-            }}
-          />
-        </div>
+                scales: {
+                  xAxes: [
+                    {
+                      type: "time",
+                      time: {
+                        unit: "month",
+                        tooltipFormat: "ddd",
+                      },
+                    },
+                  ],
+                  yAxes: [
+                    {
+                      ticks: {
+                        // max: 10000
+                        callback: (value) => metricPrefix(value),
+                      },
+                    },
+                  ],
+                },
+                elements: {
+                  point: {
+                    radius: 0,
+                  },
+                },
+              }}
+            />
+          </div> : null}
         <div className="chart-container-2">
           <Doughnut
             data={{
