@@ -33,7 +33,7 @@ export const CasesWrapper = styled.div`
 export const Card = styled.div`
   text-align: center;
   max-width: 24%;
-  padding: 2rem 1rem;
+  padding: 1.3rem 0.2rem;
   border-radius: 20px;
   box-shadow: 0 8px 30px -8px #ddd;
   flex-grow: 1;
@@ -46,17 +46,20 @@ export const Card = styled.div`
 
   @media (max-width: 960px) {
     min-width: 100%;
-    padding: 2rem 0.5rem;
+    padding: 1.4rem 0.5rem;
   }
 
   @media (max-width: 640px) {
-    padding: 0.6rem 0.5rem;
+    padding: .6rem .6rem;
+    h4 {
+      padding: .3rem .3rem;
+    }
   }
 
   h1 {
     font-size: 22pt;
     font-weight: 390;
-    margin-bottom: 1rem;
+    margin: 0;
     @media (max-width: 1100px) {
       margin: 0;
       font-size: 18pt;
@@ -65,11 +68,15 @@ export const Card = styled.div`
 
   p {
     margin: 0;
-    color : ${({color}) => color};
+    color: ${({ color }) => color};
     font-size: 24pt;
     @media (max-width: 1100px) {
       font-size: 19pt;
     }
+  }
+
+  h4{
+    font-size: 10.2pt;
   }
 `;
 
@@ -162,5 +169,25 @@ export const Tabs = styled.div`
   cursor: pointer;
   @media (max-width: 1700px) {
     margin-top: 2rem;
+  }
+`;
+
+export const NewCases = styled.h4`
+  &:before {
+    content: " ";
+    display: inline-block;
+  }
+  margin: 0;
+  padding: .6rem .6rem;
+  text-align: center;
+  color: ${({ color }) => color};
+  font-size: small;
+  font-style: italic;
+
+  @media (max-width: 1100px) {
+    padding: .3rem .3rem;
+  }
+  @media (max-width: 960px) {
+    padding: .5rem .5rem;
   }
 `;

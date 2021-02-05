@@ -13,6 +13,7 @@ import {
   Country,
   Tabs,
   Tab,
+  NewCases,
 } from "./styles";
 
 const Stats = ({
@@ -41,7 +42,7 @@ const Stats = ({
   },
 }) => {
   const router = useRouter();
-  
+
   ///State handling
   const [chartsData, setChartsData] = useState({
     filter: "daily",
@@ -50,7 +51,8 @@ const Stats = ({
     lineData: [new_confirmed, new_recovered, new_deaths],
   });
 
-  const noTimeLine = (confirmed.length + recovered.length + deaths.length > 0) ? false : true
+  const noTimeLine =
+    confirmed.length + recovered.length + deaths.length > 0 ? false : true;
 
   const getTotaleData = () => {
     setChartsData({
@@ -75,10 +77,8 @@ const Stats = ({
   };
 
   useEffect(() => {
-    if (noTimeLine)
-      getTotaleData();
-    else
-      getDailyData();
+    if (noTimeLine) getTotaleData();
+    else getDailyData();
   }, [country]);
 
   return (
@@ -87,6 +87,16 @@ const Stats = ({
       <CasesWrapper>
         <Card color="#FFA500">
           <h1>Confirmed</h1>
+          <NewCases color="#ffbc40">
+            <NumberFormat
+              value={currentNewConfirmed}
+              displayType={"text"}
+              thousandSeparator={true}
+              defaultValue={0}
+              prefix={'( + '}
+              suffix={' )'}
+            />
+          </NewCases>
           <p>
             <NumberFormat
               value={currentConfirmed}
@@ -97,6 +107,7 @@ const Stats = ({
         </Card>
         <Card color="#31B2F2">
           <h1>Active</h1>
+          <NewCases/>
           <p>
             <NumberFormat
               value={currentActive}
@@ -107,6 +118,16 @@ const Stats = ({
         </Card>
         <Card color="#4CAF50">
           <h1>Recovered</h1>
+          <NewCases color="#6cb46f">
+            <NumberFormat
+              value={currentNewRecovered}
+              displayType={"text"}
+              thousandSeparator={true}
+              defaultValue={0}
+              prefix={'( + '}
+              suffix={' )'}
+            />
+          </NewCases>
           <p>
             <NumberFormat
               value={currentRecovered}
@@ -117,6 +138,16 @@ const Stats = ({
         </Card>
         <Card color="#FF0000">
           <h1>Deaths</h1>
+          <NewCases color="#fa6464">
+            <NumberFormat
+              value={currentNewDeaths}
+              displayType={"text"}
+              thousandSeparator={true}
+              defaultValue={0}
+              prefix={'( + '}
+              suffix={' )'}
+            />
+          </NewCases>
           <p>
             <NumberFormat
               value={currentDeaths}
@@ -131,25 +162,27 @@ const Stats = ({
         <Select
           onChange={(e) => router.push(`/${e.value}`)}
           instanceId="countries"
-          options={countries ?.map((country) => ({
+          options={countries?.map((country) => ({
             label: country.name,
             value: country.code,
           }))}
         />
       </Countries>
-      {(!noTimeLine) ? <Tabs>
-        <Tab onClick={getDailyData} clicked={chartsData.filter === "daily"}>
-          <h4>Daily</h4>
-        </Tab>
-        <Tab
-          onClick={getTotaleData}
-          clicked={chartsData.filter === "cumulative"}
-        >
-          <h4>Cumulative</h4>
-        </Tab>
-      </Tabs> : null}
+      {!noTimeLine ? (
+        <Tabs>
+          <Tab onClick={getDailyData} clicked={chartsData.filter === "daily"}>
+            <h4>Daily</h4>
+          </Tab>
+          <Tab
+            onClick={getTotaleData}
+            clicked={chartsData.filter === "cumulative"}
+          >
+            <h4>Cumulative</h4>
+          </Tab>
+        </Tabs>
+      ) : null}
       <ChartsWraper>
-        {(!noTimeLine) ?
+        {!noTimeLine ? (
           <div className="chart-container-1">
             <Line
               data={{
@@ -163,13 +196,15 @@ const Stats = ({
                       chartsData.confActLabel === "Active"
                         ? "rgba(75,192,192,0.2)"
                         : "#FFE1AB",
-                    borderColor: chartsData.confActLabel === "Active"
-                      ? "rgba(75,192,192,0.2)"
-                      : "#FFE1AB",
+                    borderColor:
+                      chartsData.confActLabel === "Active"
+                        ? "rgba(75,192,192,0.2)"
+                        : "#FFE1AB",
                     borderWidth: 1,
-                    pointHoverBorderColor: chartsData.confActLabel === "Active"
-                      ? "#31B2F2"
-                      : "#FFAA00",
+                    pointHoverBorderColor:
+                      chartsData.confActLabel === "Active"
+                        ? "#31B2F2"
+                        : "#FFAA00",
                     pointHoverBackgroundColor: "rgba(75,192,192,0.2)",
                   },
                   {
@@ -224,7 +259,8 @@ const Stats = ({
                 },
               }}
             />
-          </div> : null}
+          </div>
+        ) : null}
         <div className="chart-container-2">
           <Doughnut
             data={{
@@ -232,12 +268,16 @@ const Stats = ({
                 {
                   data: [...chartsData.doughnutData],
                   backgroundColor: [
-                    chartsData.confActLabel === "Active" ? "#31B2F2" : "#FFA500",
+                    chartsData.confActLabel === "Active"
+                      ? "#31B2F2"
+                      : "#FFA500",
                     "#4CAF50",
                     "#FF0000",
                   ],
                   hoverBackgroundColor: [
-                    chartsData.confActLabel === "Active" ? "#79CAF2" : "#FCC86A",
+                    chartsData.confActLabel === "Active"
+                      ? "#79CAF2"
+                      : "#FCC86A",
                     "#A5D6A7",
                     "#ff5151",
                   ],
