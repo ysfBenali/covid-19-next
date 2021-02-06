@@ -27,6 +27,7 @@ export async function getStaticPaths() {
 
   // Get the paths we want to pre-render based on posts
   const paths = countries
+    .sort((a, b) => (a.name > b.name ? 1 : -1))
     .filter((country) => typeof country.code !== "undefined")
     .map(({ code }) => ({
       params: { country: code },
@@ -56,7 +57,7 @@ export async function getStaticProps({ params }) {
     [stats] = timeline;
   else {
     stats = latest_data;
-    stats.active = stats.confirmed - stats.recovered - stats.deaths
+    stats.active = stats.confirmed - stats.recovered - stats.deaths;
   }
 
   const days = timeline.map(({ date }) => date);

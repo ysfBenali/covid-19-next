@@ -93,8 +93,8 @@ const Stats = ({
               displayType={"text"}
               thousandSeparator={true}
               defaultValue={0}
-              prefix={'( + '}
-              suffix={' )'}
+              prefix={"( + "}
+              suffix={" )"}
             />
           </NewCases>
           <p>
@@ -107,7 +107,7 @@ const Stats = ({
         </Card>
         <Card color="#31B2F2">
           <h1>Active</h1>
-          <NewCases/>
+          <NewCases />
           <p>
             <NumberFormat
               value={currentActive}
@@ -124,8 +124,8 @@ const Stats = ({
               displayType={"text"}
               thousandSeparator={true}
               defaultValue={0}
-              prefix={'( + '}
-              suffix={' )'}
+              prefix={"( + "}
+              suffix={" )"}
             />
           </NewCases>
           <p>
@@ -144,8 +144,8 @@ const Stats = ({
               displayType={"text"}
               thousandSeparator={true}
               defaultValue={0}
-              prefix={'( + '}
-              suffix={' )'}
+              prefix={"( + "}
+              suffix={" )"}
             />
           </NewCases>
           <p>
@@ -162,10 +162,12 @@ const Stats = ({
         <Select
           onChange={(e) => router.push(`/${e.value}`)}
           instanceId="countries"
-          options={countries?.map((country) => ({
-            label: country.name,
-            value: country.code,
-          }))}
+          options={countries
+            ?.sort((a, b) => (a.name > b.name ? 1 : -1))
+            .map((country) => ({
+              label: country.name,
+              value: country.code,
+            }))}
         />
       </Countries>
       {!noTimeLine ? (
