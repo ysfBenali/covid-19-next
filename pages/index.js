@@ -1,20 +1,13 @@
-import Head from "next/head";
 import Stats from "../components/Stats";
 
 export default function Home({ days, countries, stats, timeLineStats }) {
   return (
-    <div>
-      <Head>
-        <title>covid-19-next</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <Stats
-        stats={stats}
-        countries={countries}
-        timeLineStats={timeLineStats}
-        days={days}
-      />
-    </div>
+    <Stats
+      stats={stats}
+      countries={countries}
+      timeLineStats={timeLineStats}
+      days={days}
+    />
   );
 }
 

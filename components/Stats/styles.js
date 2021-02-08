@@ -5,6 +5,7 @@ export const Wrapper = styled.div`
   flex-direction: column;
   text-align: center;
   width: 70%;
+  min-height:87vh;
   padding: 1rem 0;
   margin: 0 auto;
   @media (max-width: 1200px) {
@@ -50,9 +51,9 @@ export const Card = styled.div`
   }
 
   @media (max-width: 640px) {
-    padding: .6rem .6rem;
+    padding: 0.6rem 0.6rem;
     h4 {
-      padding: .3rem .3rem;
+      padding: 0.3rem 0.3rem;
     }
   }
 
@@ -75,7 +76,7 @@ export const Card = styled.div`
     }
   }
 
-  h4{
+  h4 {
     font-size: 10.2pt;
   }
 `;
@@ -178,16 +179,17 @@ export const NewCases = styled.h4`
     display: inline-block;
   }
   margin: 0;
-  padding: .6rem .6rem;
+  padding: 0.6rem 0.6rem;
   text-align: center;
   color: ${({ color }) => color};
   font-size: small;
   font-style: italic;
 
   @media (max-width: 1100px) {
-    padding: .3rem .3rem;
+    padding: 0.3rem 0.3rem;
   }
   @media (max-width: 960px) {
-    padding: .5rem .5rem;
+    padding: 0.5rem 0.5rem;
   }
 `;
+

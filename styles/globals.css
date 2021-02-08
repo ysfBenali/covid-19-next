@@ -1,8 +1,9 @@
 html,
-/* body {
+body {
   padding: 0;
   margin: 0;
-} */
+  min-height: 100vh;
+}
 
 a {
   color: inherit;
@@ -12,4 +13,3 @@ a {
 * {
   box-sizing: border-box;
 }
-/* canvas{ height:100%; } */
