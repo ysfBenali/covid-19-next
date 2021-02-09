@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import Select from "react-select";
 import { Doughnut, Line } from "react-chartjs-2";
 import metricPrefix from "../../common/helpers/metricPrefix";
 import NumberFormat from "react-number-format";
+import ReactCountryFlag from "react-country-flag";
+
 import {
   Wrapper,
   CasesWrapper,
@@ -83,7 +86,22 @@ const Stats = ({
 
   return (
     <Wrapper>
-      {country ? <Country>{country}</Country> : null}
+      {country ? (
+        <Country>
+          <Link href="/[country]" as={`/${country}`}>
+            <a>
+              <ReactCountryFlag
+                countryCode={country}
+                svg
+                style={{
+                  width: "2em",
+                  height: "1.5em",
+                }}
+              />
+            </a>
+          </Link>
+        </Country>
+      ) : null}
       <CasesWrapper>
         <Card color="#FFA500">
           <h1>Confirmed</h1>
